@@ -1,0 +1,16 @@
+# EdgeCloudInspection/server/Dockerfile.dev
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Instalar dependencias del sistema requeridas para OpenCV (libgl)
+RUN apt-get update && apt-get install -y \
+    libgl1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar solo el requirements primero para cachear la capa de dependencias
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# (No copiamos main.py aquí porque el docker-compose ya monta el volumen local)
